@@ -14,7 +14,7 @@ const BookDetails = sequelize.define('Book-details', {
   });
   
   Book.hasOne(BookDetails, {
-      foreignKey: 'title'
+      foreignKey: 'id'
     });
      BookDetails.belongsTo(Book);
 
