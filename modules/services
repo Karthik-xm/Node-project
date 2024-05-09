@@ -18,11 +18,10 @@ const createBook = async (req, res) => {
 const getAllBooks = async (req, res) => {
   try {
     const books = await Book.findAll({
-      include: [ 
+      include: [
         {
           model: Bookdetails,
-          attributes: ['title', 'genere'],
-            
+          attributes: ['title', 'genere']
 
         },
       ]
@@ -36,16 +35,23 @@ const getAllBooks = async (req, res) => {
 
 const updateBook = async (req, res) => {
   const bookId = req.params.id;
-  const { title, author } = req.body;
-
+  const { title, author, genere} = req.body;
   try {
-    const book = await Book.findByPk(bookId);
+    const book = await Book.findByPk(bookId, {
+      include: [
+        {
+          model: Bookdetails,
+          attributes: ['title', 'genere']
 
+        },
+      ]
+    });
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
     book.title = title;
     book.author = author;
+    book.genere = genere
     await book.save();
     res.json(book);
   } catch (error) {
@@ -58,7 +64,14 @@ const deleteBook = async (req, res) => {
   const bookId = req.params.id;
 
   try {
-    const book = await Book.findByPk(bookId);
+    const book = await Book.findByPk(bookId, {
+      include: [
+        {
+          model: Bookdetails,
+          attributes: ['title', 'genere']
+        }
+      ]
+    });
 
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
