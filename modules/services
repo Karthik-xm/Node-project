@@ -1,12 +1,14 @@
 const Book = require('../model/books');
 const Bookdetails = require('../model/book-details');
+const Author = require('../model/author');
 
 
 const createBook = async (req, res) => {
-  const { title, author, genere } = req.body;
+  const { title, author, genere, place } = req.body;
   try {
     const newBook = await Book.create({ title, author });
     const BookDetails = await Bookdetails.create({ title, genere });
+    const AutherDetails = await Author.create({ name: author, place });
     res.status(201).json(newBook);
 
   } catch (error) {
@@ -23,6 +25,10 @@ const getAllBooks = async (req, res) => {
           model: Bookdetails,
           attributes: ['title', 'genere']
 
+        },{
+          model: Author,
+          attributes: ['name', 'place']
+
         },
       ]
     });
@@ -35,7 +41,7 @@ const getAllBooks = async (req, res) => {
 
 const updateBook = async (req, res) => {
   const bookId = req.params.id;
-  const { title, author, genere} = req.body;
+  const { title, author, genere, place} = req.body;
   try {
     const book = await Book.findByPk(bookId, {
       include: [
@@ -43,7 +49,11 @@ const updateBook = async (req, res) => {
           model: Bookdetails,
           attributes: ['title', 'genere']
 
-        },
+        },{
+          model: Author,
+          attributes: ['name', 'place']
+
+        }
       ]
     });
     if (!book) {
@@ -51,7 +61,8 @@ const updateBook = async (req, res) => {
     }
     book.title = title;
     book.author = author;
-    book.genere = genere
+    book.genere = genere;
+    book.place = place;
     await book.save();
     res.json(book);
   } catch (error) {
@@ -69,6 +80,10 @@ const deleteBook = async (req, res) => {
         {
           model: Bookdetails,
           attributes: ['title', 'genere']
+        },{
+          model: Author,
+          attributes: ['name', 'place']
+
         }
       ]
     });

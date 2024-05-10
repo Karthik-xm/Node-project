@@ -2,20 +2,20 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db-connect');
 const Book = require('./books')
 
-const BookDetails = sequelize.define('Book-details', {
-    title: {
+const Author = sequelize.define('Author', {
+    name: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    genere: {
+    place: {
       type: DataTypes.STRING,
       allowNull: false
     }
   });
   
-  Book.hasOne(BookDetails, {
+  Book.hasMany(Author, {
       foreignKey: 'id'
     });
-  BookDetails.belongsTo(Book);
+    Author.belongsTo(Book);
 
-module.exports = BookDetails;
+module.exports = Author;
